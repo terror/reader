@@ -63,31 +63,49 @@ func (r *ReaderAPI) makeRequest(method, endpoint string, body any) (*http.Respon
 }
 
 func (r *ReaderAPI) GetDocuments(location string, limit int) ([]Document, error) {
-  endpoint := "/list/?withHtmlContent=true"
+  var allDocuments []Document
 
-  if location != "" {
-    endpoint += "&location=" + location
+  var pageCursor string
+
+  for {
+    endpoint := "/list/?withHtmlContent=true"
+
+    if location != "" {
+      endpoint += "&location=" + location
+    }
+
+    if pageCursor != "" {
+      endpoint += "&pageCursor=" + pageCursor
+    }
+
+    resp, err := r.makeRequest("GET", endpoint, nil)
+
+    if err != nil {
+      return nil, err
+    }
+
+    defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK {
+      return nil, fmt.Errorf("API request failed with status %d", resp.StatusCode)
+    }
+
+    var documentsResp DocumentsResponse
+
+    if err := json.NewDecoder(resp.Body).Decode(&documentsResp); err != nil {
+      return nil, fmt.Errorf("failed to decode response: %w", err)
+    }
+
+    allDocuments = append(allDocuments, documentsResp.Results...)
+
+    if documentsResp.NextPageCursor == "" {
+      break
+    }
+
+    pageCursor = documentsResp.NextPageCursor
   }
 
-  resp, err := r.makeRequest("GET", endpoint, nil)
-
-  if err != nil {
-    return nil, err
-  }
-
-  defer resp.Body.Close()
-
-  if resp.StatusCode != http.StatusOK {
-    return nil, fmt.Errorf("API request failed with status %d", resp.StatusCode)
-  }
-
-  var documentsResp DocumentsResponse
-
-  if err := json.NewDecoder(resp.Body).Decode(&documentsResp); err != nil {
-    return nil, fmt.Errorf("failed to decode response: %w", err)
-  }
-
-  return documentsResp.Results, nil
+  return allDocuments, nil
 }
 
 func (r *ReaderAPI) GetDocumentContent(documentID string) (string, error) {
