@@ -12,9 +12,9 @@ default:
 
 all: test lint forbid fmt-check
 
-run:
+run *args:
 	#!/bin/bash
-	go run `fd .go ./src -E *_test.go`
+	go run `fd .go ./src -E *_test.go` {{ args }}
 
 test:
 	go test ./src
