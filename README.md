@@ -1,5 +1,7 @@
 ## reader
 
+[![CI](https://github.com/terror/reader/actions/workflows/ci.yaml/badge.svg)](https://github.com/terror/reader/actions/workflows/ci.yaml)
+
 **reader** is a terminal user-interface for browsing your articles saved to
 [Reader](https://readwise.io/read).
 
