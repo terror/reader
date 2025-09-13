@@ -6,3 +6,8 @@
 [Reader](https://readwise.io/read).
 
 <img width="854" height="680" alt="Screenshot 2025-09-13 at 12 50 30 AM" src="https://github.com/user-attachments/assets/ee4dcb7b-8c3e-46f7-b023-62d149645847" />
+
+## Prior Art
+
+This project was inspired by [nom](https://github.com/guyfedwards/nom), an RSS
+reader for the terminal.
