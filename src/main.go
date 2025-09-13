@@ -313,6 +313,26 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
           m.scrollOffset++
         }
       }
+    case "ctrl+u":
+      // Page up
+      if m.state == documentListView && len(m.documents) > 0 {
+        pageSize := max(1, (m.height-8)/2) // Half page scroll
+        m.selected = max(0, m.selected-pageSize)
+      } else if m.state == documentReadView {
+        pageSize := max(1, (m.height-6)/2) // Half page scroll
+        m.scrollOffset = max(0, m.scrollOffset-pageSize)
+      }
+    case "ctrl+d":
+      // Page down
+      if m.state == documentListView && len(m.documents) > 0 {
+        pageSize := max(1, (m.height-8)/2) // Half page scroll
+        m.selected = min(len(m.documents)-1, m.selected+pageSize)
+      } else if m.state == documentReadView && len(m.contentLines) > 0 {
+        pageSize := max(1, (m.height-6)/2) // Half page scroll
+        maxScroll := len(m.contentLines) - (m.height - 6)
+        maxScroll = max(maxScroll, 0)
+        m.scrollOffset = min(maxScroll, m.scrollOffset+pageSize)
+      }
     case "left", "h":
       if m.state == documentListView && len(m.categories) > 0 && m.selectedCategory > 0 {
         m.selectedCategory--
