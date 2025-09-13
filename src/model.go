@@ -9,6 +9,17 @@ import (
   "strings"
 )
 
+type state int
+
+const (
+  documentListView state = iota
+  documentReadView
+)
+
+type allDocumentsLoadedMsg []Document
+type documentContentMsg string
+type errorMsg error
+
 type model struct {
   allDocuments     []Document
   api              *ReaderAPI
