@@ -84,7 +84,11 @@ func (r *ReaderAPI) GetDocuments(location string, limit int) ([]Document, error)
       return nil, err
     }
 
-    defer resp.Body.Close()
+    defer func() {
+      if err := resp.Body.Close(); err != nil {
+        fmt.Printf("Warning: failed to close response body: %v\n", err)
+      }
+    }()
 
     if resp.StatusCode != http.StatusOK {
       return nil, fmt.Errorf("API request failed with status %d", resp.StatusCode)
@@ -117,7 +121,11 @@ func (r *ReaderAPI) GetDocumentContent(documentID string) (string, error) {
     return "", err
   }
 
-  defer resp.Body.Close()
+  defer func() {
+    if err := resp.Body.Close(); err != nil {
+      fmt.Printf("Warning: failed to close response body: %v\n", err)
+    }
+  }()
 
   if resp.StatusCode != http.StatusOK {
     return "", fmt.Errorf("API request failed with status %d", resp.StatusCode)
@@ -143,7 +151,11 @@ func (r *ReaderAPI) ValidateToken() error {
     return fmt.Errorf("failed to validate token: %w", err)
   }
 
-  defer resp.Body.Close()
+  defer func() {
+    if err := resp.Body.Close(); err != nil {
+      fmt.Printf("Warning: failed to close response body: %v\n", err)
+    }
+  }()
 
   if resp.StatusCode != http.StatusNoContent {
     return fmt.Errorf("invalid token")
