@@ -21,42 +21,42 @@ const (
 )
 
 type model struct {
-  state            state
-  documents        []Document
   allDocuments     []Document
+  api              *ReaderAPI
   categories       []Category
-  selectedCategory int
-  selected         int
-  currentLocation  string
   content          string
   contentLines     []string
-  scrollOffset     int
-  width            int
-  height           int
-  api              *ReaderAPI
-  loading          bool
+  currentLocation  string
+  documents        []Document
   err              error
+  height           int
+  loading          bool
   renderer         *glamour.TermRenderer
+  scrollOffset     int
+  selected         int
+  selectedCategory int
+  state            state
+  width            int
 }
 
 type Category struct {
   Name     string
-  Location string
   Count    int
+  Location string
 }
 
 type Document struct {
   ID            string `json:"id"`
-  Title         string `json:"title"`
   Author        string `json:"author"`
-  Summary       string `json:"summary"`
-  URL           string `json:"url"`
-  SourceURL     string `json:"source_url"`
   Category      string `json:"category"`
-  Location      string `json:"location"`
-  WordCount     int    `json:"word_count"`
-  PublishedDate any    `json:"published_date"`
   HTMLContent   string `json:"html_content"`
+  Location      string `json:"location"`
+  PublishedDate any    `json:"published_date"`
+  SourceURL     string `json:"source_url"`
+  Summary       string `json:"summary"`
+  Title         string `json:"title"`
+  URL           string `json:"url"`
+  WordCount     int    `json:"word_count"`
 }
 
 func (d Document) GetPublishedDate() string {
@@ -523,7 +523,7 @@ func printUsage() {
   fmt.Println("reader - Terminal user-interface for Readwise Reader")
   fmt.Println()
   fmt.Println("Usage:")
-  fmt.Println("  reader                    Start the TUI")
+  fmt.Println("  reader                           Start the TUI")
   fmt.Println("  reader config set-token <token>  Set your Readwise access token")
   fmt.Println()
   fmt.Println("Get your token from: https://readwise.io/access_token")
