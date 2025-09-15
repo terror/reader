@@ -20,7 +20,7 @@ type allDocumentsLoadedMsg []Document
 type documentContentMsg string
 type errorMsg error
 
-type model struct {
+type App struct {
   allDocuments     []Document
   api              *ReaderAPI
   categories       []Category
@@ -39,11 +39,11 @@ type model struct {
   width            int
 }
 
-func (m model) Init() tea.Cmd {
+func (m App) Init() tea.Cmd {
   return loadAllDocuments(m.api)
 }
 
-func NewModel() model {
+func NewModel() App {
   token, err := getToken()
 
   if err != nil {
@@ -62,7 +62,7 @@ func NewModel() model {
     log.Fatal(err)
   }
 
-  return model{
+  return App{
     state:    documentListView,
     api:      api,
     loading:  true,
@@ -71,7 +71,7 @@ func NewModel() model {
   }
 }
 
-func (m model) View() string {
+func (m App) View() string {
   switch m.state {
   case documentListView:
     return m.renderDocumentList()
@@ -82,7 +82,7 @@ func (m model) View() string {
   }
 }
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   switch msg := msg.(type) {
 
   case allDocumentsLoadedMsg:
@@ -219,7 +219,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   return m, nil
 }
 
-func (m model) renderDocumentList() string {
+func (m App) renderDocumentList() string {
   s := "📚 Reader\n\n"
 
   if len(m.categories) > 1 {
@@ -290,7 +290,7 @@ func (m model) renderDocumentList() string {
   return s
 }
 
-func (m model) renderDocument() string {
+func (m App) renderDocument() string {
   s := "📖 Reading\n\n"
 
   if m.content == "" {
@@ -322,7 +322,7 @@ func (m model) renderDocument() string {
   return s
 }
 
-func (m model) filterDocumentsByLocation(location string) []Document {
+func (m App) filterDocumentsByLocation(location string) []Document {
   var filtered []Document
 
   for _, doc := range m.allDocuments {
