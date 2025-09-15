@@ -84,7 +84,6 @@ func (m App) View() string {
 
 func (m App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
   switch msg := msg.(type) {
-
   case allDocumentsLoadedMsg:
     allDocs := []Document(msg)
 
@@ -108,7 +107,6 @@ func (m App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     }
 
     m.state = documentListView
-
   case documentContentMsg:
     content := string(msg)
 
@@ -120,7 +118,6 @@ func (m App) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
     } else {
       m.contentLines = strings.Split(content, "\n")
     }
-
   case errorMsg:
     m.err = error(msg)
     m.loading = false

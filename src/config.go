@@ -4,7 +4,9 @@ import (
   "encoding/json"
   "fmt"
   "os"
+  "os/exec"
   "path/filepath"
+  "runtime"
 )
 
 type Config struct {
@@ -96,8 +98,6 @@ func setToken(token string) error {
     return err
   }
 
-  fmt.Printf("Token saved to config file.\n")
-
   return nil
 }
 
@@ -113,8 +113,31 @@ func getToken() (string, error) {
   }
 
   if config.Token == "" {
-    return "", fmt.Errorf("no token found. Set it with: reader-tui config set-token <token>\nOr set READWISE_TOKEN environment variable\nGet your token from: https://readwise.io/access_token")
+    return "", fmt.Errorf("no token found. Set it with `reader config set-token <token>`\nGet your token from https://readwise.io/access_token")
   }
 
   return config.Token, nil
+}
+
+func openTokenURL() error {
+  url := "https://readwise.io/access_token"
+
+  var cmd *exec.Cmd
+
+  switch runtime.GOOS {
+  case "darwin":
+    cmd = exec.Command("open", url)
+  case "windows":
+    cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
+  case "linux":
+    cmd = exec.Command("xdg-open", url)
+  default:
+    return fmt.Errorf("unsupported platform: %s", runtime.GOOS)
+  }
+
+  if err := cmd.Run(); err != nil {
+    return fmt.Errorf("failed to open browser: %w", err)
+  }
+
+  return nil
 }

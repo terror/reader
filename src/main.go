@@ -8,13 +8,14 @@ import (
 )
 
 func help() {
-  fmt.Println("reader - Terminal user-interface for Readwise Reader")
+  fmt.Println("reader")
+  fmt.Println()
+  fmt.Println("A terminal user-interface for browsing your articles saved to Reader.")
   fmt.Println()
   fmt.Println("Usage:")
-  fmt.Println("  reader                           Start the TUI")
-  fmt.Println("  reader config set-token <token>  Set your Readwise access token")
-  fmt.Println()
-  fmt.Println("Get your token from: https://readwise.io/access_token")
+  fmt.Println("  reader                          Start the interface")
+  fmt.Println("  reader config get-token         Open your browser to get your Readwise access token")
+  fmt.Println("  reader config set-token <token> Set your Readwise access token")
 }
 
 func run() {
@@ -50,6 +51,11 @@ func main() {
       }
       if err := setToken(args[2]); err != nil {
         fmt.Fprintf(os.Stderr, "error setting token: %s\n", err.Error())
+        os.Exit(1)
+      }
+    case "get-token":
+      if err := openTokenURL(); err != nil {
+        fmt.Fprintf(os.Stderr, "error opening token URL: %s\n", err.Error())
         os.Exit(1)
       }
     default:
